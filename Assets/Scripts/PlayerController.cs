@@ -1,6 +1,7 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,8 +13,8 @@ public class PlayerController : MonoBehaviour
 
     public float MoveSpeed = 5f;
     public float RotationSpeed = 5f;
-    public float JumpForce = 1.0f;
-    public float gravity = 9.81f;
+    public float JumpForce = 10f;
+    //public float gravity = 9.81f;
     public float verticalVelocity = 0f;
 
 
@@ -38,8 +39,9 @@ public class PlayerController : MonoBehaviour
         inputs.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         inputs.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-        inputs.Player.Jump.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        inputs.Player.Jump.performed += OnJump;
     }
+
 
     void Update()
     {
@@ -55,14 +57,30 @@ public class PlayerController : MonoBehaviour
 
         Vector3 moveDir = transform.forward * moveInput.y * MoveSpeed;
 
-        verticalVelocity -= gravity * Time.deltaTime;
+        verticalVelocity += Physics.gravity.y * Time.deltaTime;
+
+        if(controller.isGrounded && verticalVelocity < 0)
+        {
+            verticalVelocity = -2f;
+        }
+
 
         //Vector3 JumpDir = transform.up * moveInput.y * JumpForce;
 
         moveDir.y = verticalVelocity;
 
         controller.Move(moveDir*Time.deltaTime);
-   
+
+    }
+
+    private void OnJump(InputAction.CallbackContext context)
+    {
+        if (!controller.isGrounded)return;
+
+        verticalVelocity = JumpForce;
+
+
+        
     }
 
     /*public void OnsimpleMove()
