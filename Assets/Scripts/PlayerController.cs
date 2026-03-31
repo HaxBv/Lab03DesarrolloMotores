@@ -27,8 +27,6 @@ public class PlayerController : MonoBehaviour
 
     private bool IsDashing;
 
-    private Vector3 externalForce;
-    public float pushDecay = 6f;
 
     private void Awake()
     {
@@ -90,11 +88,7 @@ public class PlayerController : MonoBehaviour
         {
             //convertir dash a un barrido
 
-            //moveDir = (transform.forward * DashForce * (dashTimer / DashDuration));
-            Vector3 dashDir = (transform.forward * DashForce * (dashTimer / DashDuration));
-
-            moveDir.x = dashDir.x;
-            moveDir.z = dashDir.z;
+            moveDir = (transform.forward * DashForce * (dashTimer / DashDuration));
 
 
             dashTimer -= Time.deltaTime;
@@ -105,9 +99,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        moveDir += externalForce;
         controller.Move(moveDir*Time.deltaTime);
-        externalForce = Vector3.Lerp(externalForce, Vector3.zero, pushDecay * Time.deltaTime);
     }
 
     private void OnJump(InputAction.CallbackContext context)
@@ -125,58 +117,28 @@ public class PlayerController : MonoBehaviour
         dashTimer = DashDuration;
 
     }
+  
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if( hit.rigidbody != null )
+
+        Vector3 PushDir = (hit.transform.position - transform.position).normalized;
+       /*
+
+        if (hit.rigidbody!= null)
         {
 
-            Vector3 pushDir = (transform.position - hit.transform.position).normalized;
 
-            pushDir.y = 0; // evitar que salga volando
+            Vector3 moveDir = transform.forward * moveInput.y * MoveSpeed;
+            moveDir = (transform.forward * DashForce * (dashTimer / DashDuration))* verticalVelocity;
 
-            externalForce += pushDir * 5f; // ajusta este valor
             Debug.Log(hit.gameObject.name);
         }
+       */
+        
+
+
+
     }
-    /*
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-
-        /*Vector3 PushDir = (hit.transform.position - transform.position).normalized;
-       
-
-        if (hit.rigidbody!= null && hit.rigidbody.linearVelocity == Vector3.zero)
-        {
-            hit.rigidbody.AddForce(PushDir * PushForce, ForceMode.Impulse);
-
-
-
-            Debug.Log(hit.gameObject.name);
-        }
-
-        Vector3 PushDir = (transform.position - hit.transform.position).normalized;
-
-        Vector3 moveDir = transform.forward * moveInput.y * MoveSpeed;
-
-        if (IsKnockback)
-        {
-            //convertir dash a un barrido
-
-            moveDir = -(PushDir * DashForce * (dashTimer / DashDuration));
-
-
-            dashTimer -= Time.deltaTime;
-
-            if(dashTimer <= 0)
-            {
-                IsKnockback = false;
-            }
-        }
-
-
-        controller.Move(moveDir*Time.deltaTime);
-
-    }*/
     /*public void OnsimpleMove()
     {
         transform.Rotate(Vector3.up * moveInput.x * RotationSpeed * Time.deltaTime);
