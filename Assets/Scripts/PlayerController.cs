@@ -14,10 +14,19 @@ public class PlayerController : MonoBehaviour
     public float MoveSpeed = 5f;
     public float RotationSpeed = 5f;
     public float JumpForce = 10f;
+    public float PushForce = 4f;
+    public float DashForce = 1.0f;
+
+
+    public float DashDuration = 1.0f;
+    private float dashTimer = 0f;
+
+
     //public float gravity = 9.81f;
     public float verticalVelocity = 0f;
 
-
+    private bool IsDashing;
+    
 
     private void Awake()
     {
@@ -40,8 +49,11 @@ public class PlayerController : MonoBehaviour
         inputs.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
         inputs.Player.Jump.performed += OnJump;
+
+        inputs.Player.Sprint.performed += OnDash;
     }
 
+    
 
     void Update()
     {
@@ -69,6 +81,25 @@ public class PlayerController : MonoBehaviour
 
         moveDir.y = verticalVelocity;
 
+
+
+
+        if(IsDashing)
+        {
+            //convertir dash a un barrido
+
+            moveDir = (transform.forward * DashForce * (dashTimer / DashDuration));
+
+
+            dashTimer -= Time.deltaTime;
+
+            if(dashTimer <= 0)
+            {
+                IsDashing = false;
+            }
+        }
+
+
         controller.Move(moveDir*Time.deltaTime);
 
     }
@@ -82,7 +113,25 @@ public class PlayerController : MonoBehaviour
 
         
     }
+    private void OnDash(InputAction.CallbackContext context)
+    {
+        IsDashing = true;
+        dashTimer = DashDuration;
 
+    }
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+
+        Vector3 PushDir = (hit.transform.position - transform.position).normalized;
+
+        if(hit.rigidbody!= null && hit.rigidbody.linearVelocity == Vector3.zero)
+        {
+            hit.rigidbody.AddForce(PushDir * PushForce, ForceMode.Impulse);
+
+            Debug.Log(hit.gameObject.name);
+        }
+
+    }
     /*public void OnsimpleMove()
     {
         transform.Rotate(Vector3.up * moveInput.x * RotationSpeed * Time.deltaTime);
