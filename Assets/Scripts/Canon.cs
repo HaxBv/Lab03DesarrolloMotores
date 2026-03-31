@@ -6,7 +6,7 @@ public class Canon : MonoBehaviour
     public float timeToShoot = 5f;
 
 
-    public float PushForce = 4f;
+    public float PushForce;
     public GameObject Ball;
     void Start()
     {
@@ -17,7 +17,7 @@ public class Canon : MonoBehaviour
     {
         if (timer <=0)
         {
-           
+           PushForce = Random.Range(15f, 25f);
             GameObject BallInstance = Instantiate(Ball, transform.position, Quaternion.identity);
             
             //Vector3 PushDir = (BallInstance.transform.position - transform.position).normalized;

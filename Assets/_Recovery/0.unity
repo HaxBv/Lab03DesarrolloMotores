@@ -13444,10 +13444,10 @@ MonoBehaviour:
   RotationSpeed: 200
   JumpForce: 8
   PushForce: 4
-  DashForce: 20
+  DashForce: 10
   DashDuration: 0.5
   verticalVelocity: 0
-  pushDecay: 60
+  pushDecay: 6
 --- !u!43 &2021910847
 Mesh:
   m_ObjectHideFlags: 0
