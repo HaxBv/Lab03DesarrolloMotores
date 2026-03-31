@@ -18,6 +18,12 @@ public class PlayerController : MonoBehaviour
     public float DashForce = 1.0f;
 
 
+
+
+
+    private bool IsRunning;
+
+
     public float DashDuration = 1.0f;
     private float dashTimer = 0f;
 
@@ -26,6 +32,13 @@ public class PlayerController : MonoBehaviour
     public float verticalVelocity = 0f;
 
     private bool IsDashing;
+
+    private bool IsKnockback;
+    private Vector3 PushDir;
+    public float KnockbackForce;
+
+    public float KnockbackDuration = 1.0f;
+    private float knockbackTimer = 0f;
 
 
     private void Awake()
@@ -50,10 +63,12 @@ public class PlayerController : MonoBehaviour
 
         inputs.Player.Jump.performed += OnJump;
 
-        inputs.Player.Sprint.performed += OnDash;
+        inputs.Player.Sprint.performed += ctx => MoveSpeed = MoveSpeed*2;
+        inputs.Player.Sprint.canceled += ctx => MoveSpeed = MoveSpeed*0.5f;
+
+        inputs.Player.Dash.performed += OnDash;
     }
 
-    
 
     void Update()
     {
@@ -99,6 +114,26 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+
+
+
+
+        if (IsKnockback)
+        {
+            //convertir dash a un barrido
+
+            moveDir = (PushDir * KnockbackForce * (knockbackTimer / KnockbackDuration));
+
+
+            knockbackTimer -= Time.deltaTime;
+
+            if (knockbackTimer <= 0)
+            {
+                IsKnockback = false;
+            }
+        }
+
+
         controller.Move(moveDir*Time.deltaTime);
     }
 
@@ -111,6 +146,7 @@ public class PlayerController : MonoBehaviour
 
         
     }
+
     private void OnDash(InputAction.CallbackContext context)
     {
         IsDashing = true;
@@ -121,7 +157,16 @@ public class PlayerController : MonoBehaviour
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
 
-        Vector3 PushDir = (hit.transform.position - transform.position).normalized;
+        if (hit.rigidbody != null)
+        {
+
+            PushDir = (transform.position - hit.transform.position).normalized;
+            IsKnockback = true;
+            knockbackTimer = KnockbackDuration;
+
+            Debug.Log(hit.gameObject.name);
+
+        }
        /*
 
         if (hit.rigidbody!= null)

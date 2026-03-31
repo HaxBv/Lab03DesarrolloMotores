@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    public Rigidbody body;
+    public float lifeTime = 10f;
     void Start()
     {
-       body = GetComponent<Rigidbody>();
+        Destroy(gameObject, lifeTime);
     }
 
     // Update is called once per frame
