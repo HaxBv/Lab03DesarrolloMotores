@@ -18,13 +18,13 @@ public class Canon : MonoBehaviour
         if (timer <=0)
         {
            
-            GameObject BallInstance = Instantiate(Ball, transform.position, Quaternion.identity, this.transform);
+            GameObject BallInstance = Instantiate(Ball, transform.position, Quaternion.identity);
             
-            Vector3 PushDir = (BallInstance.transform.position - transform.position).normalized;
+            //Vector3 PushDir = (BallInstance.transform.position - transform.position).normalized;
 
+            BallInstance.transform.forward = transform.forward;
 
-            //Ball.AddForce(PushDir * PushForce, ForceMode.Impulse);
-
+            BallInstance.GetComponent<Rigidbody>().AddForce(transform.forward * PushForce, ForceMode.Impulse);
 
 
             timer = timeToShoot;

@@ -3,10 +3,9 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     public Rigidbody body;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+       body = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
