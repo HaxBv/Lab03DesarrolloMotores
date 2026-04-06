@@ -17,7 +17,7 @@ public class Canon : MonoBehaviour
     {
         if (timer <=0)
         {
-           PushForce = Random.Range(10f, 15f);
+           PushForce = Random.Range(7f, 17f);
             GameObject BallInstance = Instantiate(Ball, transform.position, Quaternion.identity);
             
             //Vector3 PushDir = (BallInstance.transform.position - transform.position).normalized;

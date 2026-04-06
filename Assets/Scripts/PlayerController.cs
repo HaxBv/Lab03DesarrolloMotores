@@ -167,18 +167,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log(hit.gameObject.name);
 
         }
-       /*
-
-        if (hit.rigidbody!= null)
-        {
-
-
-            Vector3 moveDir = transform.forward * moveInput.y * MoveSpeed;
-            moveDir = (transform.forward * DashForce * (dashTimer / DashDuration))* verticalVelocity;
-
-            Debug.Log(hit.gameObject.name);
-        }
-       */
+       
         
 
 

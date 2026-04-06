@@ -4,36 +4,43 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     public float TimeToChangeDirection = 5f;
-
+    public float PauseDuration = 2f;
     public float speed = 1f;
 
+    private float moveTimer;
+   
+    private float pauseTimer;
 
     public float Timer;
     public bool MovingRight = false;
+    private bool isPaused = false;
     void Start()
     {
-        
+        moveTimer = TimeToChangeDirection;
     }
 
     void Update()
     {
-        Timer -= Time.deltaTime;
-        if (Timer <= 0)
+        if (isPaused)
         {
-            Timer = TimeToChangeDirection;
-            if(MovingRight)
-            {
+            pauseTimer -= Time.deltaTime;
 
-                MovingRight = false;
-            }
-            else
+            if (pauseTimer <= 0)
             {
-                MovingRight = true;
+                isPaused = false;
+
+                MovingRight = !MovingRight;
+
+                moveTimer = TimeToChangeDirection;
             }
+
+            return;
         }
+
+        moveTimer -= Time.deltaTime;
+
         if (MovingRight)
         {
-
             transform.position += transform.right * speed * Time.deltaTime;
         }
         else
@@ -41,7 +48,10 @@ public class Block : MonoBehaviour
             transform.position -= transform.right * speed * Time.deltaTime;
         }
 
-
-
+        if (moveTimer <= 0)
+        {
+            isPaused = true;
+            pauseTimer = PauseDuration;
+        }
     }
 }
